@@ -1,0 +1,12 @@
+{
+  "id": "744000012345678",
+  "name": "Senior Data Engineer",
+  "jobAd": {
+    "sections": {
+      "companyDescription": { "title": "Company", "text": "<p>Acme Corp builds data infrastructure.</p>" },
+      "jobDescription": { "title": "The Role", "text": "<p>You will design and operate our <strong>Spark</strong> and <strong>Airflow</strong> pipelines on AWS.</p>" },
+      "qualifications": { "title": "Qualifications", "text": "<ul><li>5+ years data engineering</li><li>SQL, Python</li></ul>" },
+      "additionalInformation": { "title": "Extra", "text": "" }
+    }
+  }
+}

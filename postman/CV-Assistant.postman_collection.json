@@ -1,0 +1,1263 @@
+{
+ "info": {
+  "name": "CV Assistant - API v2 (Auth + MinIO + Cache)",
+  "description": "Functional tests for CV Assistant v2: JWT auth on every CV endpoint, verification-code password reset (no enumeration), JSON + MinIO presigned URL responses, application cache, per-user ownership (403).\n\n  newman run postman/CV-Assistant.postman_collection.json -e postman/CV-Assistant.postman_environment.json --working-dir postman --timeout-request 240000\n\nNeeds a live server with NVIDIA_API_KEY + database + MinIO, and PASSWORD_RESET_DEV_MODE=true (so the reset code comes back in the body).",
+  "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+ },
+ "event": [
+  {
+   "listen": "prerequest",
+   "script": {
+    "exec": [
+     "if (!pm.collectionVariables.get('run_id')) {",
+     "  const rid = Date.now().toString();",
+     "  pm.collectionVariables.set('run_id', rid);",
+     "  pm.collectionVariables.set('email_a', 'alice-' + rid + '@demo.com');",
+     "  pm.collectionVariables.set('email_b', 'bob-' + rid + '@demo.com');",
+     "}",
+     "if (!pm.collectionVariables.get('language')) pm.collectionVariables.set('language', 'fr');"
+    ]
+   }
+  }
+ ],
+ "variable": [
+  {
+   "key": "run_id",
+   "value": ""
+  },
+  {
+   "key": "email_a",
+   "value": ""
+  },
+  {
+   "key": "email_b",
+   "value": ""
+  },
+  {
+   "key": "token_a",
+   "value": ""
+  },
+  {
+   "key": "token_b",
+   "value": ""
+  },
+  {
+   "key": "reset_code",
+   "value": ""
+  },
+  {
+   "key": "forgot_message",
+   "value": ""
+  },
+  {
+   "key": "cv_id",
+   "value": ""
+  },
+  {
+   "key": "letter_id",
+   "value": ""
+  },
+  {
+   "key": "stats_before",
+   "value": "0"
+  },
+  {
+   "key": "language",
+   "value": "fr"
+  }
+ ],
+ "item": [
+  {
+   "name": "Health check",
+   "request": {
+    "method": "GET",
+    "url": "{{base_url}}/api/health",
+    "header": []
+   },
+   "event": [
+    {
+     "listen": "test",
+     "script": {
+      "exec": [
+       "pm.test('200 OK', () => pm.response.to.have.status(200));",
+       "const b = pm.response.json();",
+       "pm.test('status ok', () => pm.expect(b.status).to.eql('ok'));",
+       "pm.test('service = cv-generator', () => pm.expect(b.service).to.eql('cv-generator'));",
+       "pm.test('version 2.x', () => pm.expect(b.version).to.match(/^2\\./));",
+       "pm.test('reports gemini_configured', () => pm.expect(b).to.have.property('gemini_configured'));"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "Stats - baseline",
+   "request": {
+    "method": "GET",
+    "url": "{{base_url}}/api/stats",
+    "header": []
+   },
+   "event": [
+    {
+     "listen": "test",
+     "script": {
+      "exec": [
+       "pm.test('200 OK', () => pm.response.to.have.status(200));",
+       "const b = pm.response.json();",
+       "['total_calls','cache_hits','total_input_chars','total_output_chars','cache_size'].forEach(k =>",
+       "  pm.test('has ' + k, () => pm.expect(b[k]).to.be.a('number')));"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "Auth - Signup user A",
+   "request": {
+    "method": "POST",
+    "url": "{{base_url}}/api/auth/signup",
+    "header": [
+     {
+      "key": "Content-Type",
+      "value": "application/json"
+     }
+    ],
+    "body": {
+     "mode": "raw",
+     "raw": "{\n  \"email\": \"{{email_a}}\",\n  \"password\": \"Str0ngPass1\"\n}"
+    }
+   },
+   "event": [
+    {
+     "listen": "test",
+     "script": {
+      "exec": [
+       "pm.test('201 Created', () => pm.response.to.have.status(201));",
+       "const b = pm.response.json();",
+       "pm.test('has access_token', () => pm.expect(b.access_token).to.be.a('string'));",
+       "pm.test('token_type bearer', () => pm.expect(b.token_type).to.eql('bearer'));",
+       "pm.test('user email echoed', () => pm.expect(b.user.email).to.eql(pm.collectionVariables.get('email_a')));",
+       "pm.test('no password_hash leaked', () => pm.expect(pm.response.text()).to.not.include('password_hash'));",
+       "pm.collectionVariables.set('token_a', b.access_token);"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "Auth - Signup duplicate -> 409",
+   "request": {
+    "method": "POST",
+    "url": "{{base_url}}/api/auth/signup",
+    "header": [
+     {
+      "key": "Content-Type",
+      "value": "application/json"
+     }
+    ],
+    "body": {
+     "mode": "raw",
+     "raw": "{\n  \"email\": \"{{email_a}}\",\n  \"password\": \"Str0ngPass1\"\n}"
+    }
+   },
+   "event": [
+    {
+     "listen": "test",
+     "script": {
+      "exec": [
+       "pm.test('409 Conflict', () => pm.response.to.have.status(409));",
+       "pm.test('error body', () => pm.expect(pm.response.json().status).to.eql('error'));"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "Auth - Signup weak password -> 422",
+   "request": {
+    "method": "POST",
+    "url": "{{base_url}}/api/auth/signup",
+    "header": [
+     {
+      "key": "Content-Type",
+      "value": "application/json"
+     }
+    ],
+    "body": {
+     "mode": "raw",
+     "raw": "{\n  \"email\": \"weak-{{run_id}}@demo.com\",\n  \"password\": \"short\"\n}"
+    }
+   },
+   "event": [
+    {
+     "listen": "test",
+     "script": {
+      "exec": [
+       "pm.test('422', () => pm.response.to.have.status(422));"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "Auth - Signin user A",
+   "request": {
+    "method": "POST",
+    "url": "{{base_url}}/api/auth/signin",
+    "header": [
+     {
+      "key": "Content-Type",
+      "value": "application/json"
+     }
+    ],
+    "body": {
+     "mode": "raw",
+     "raw": "{\n  \"email\": \"{{email_a}}\",\n  \"password\": \"Str0ngPass1\"\n}"
+    }
+   },
+   "event": [
+    {
+     "listen": "test",
+     "script": {
+      "exec": [
+       "pm.test('200 OK', () => pm.response.to.have.status(200));",
+       "pm.collectionVariables.set('token_a', pm.response.json().access_token);"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "Auth - Signin wrong password -> 401",
+   "request": {
+    "method": "POST",
+    "url": "{{base_url}}/api/auth/signin",
+    "header": [
+     {
+      "key": "Content-Type",
+      "value": "application/json"
+     }
+    ],
+    "body": {
+     "mode": "raw",
+     "raw": "{\n  \"email\": \"{{email_a}}\",\n  \"password\": \"WrongPass999\"\n}"
+    }
+   },
+   "event": [
+    {
+     "listen": "test",
+     "script": {
+      "exec": [
+       "pm.test('401', () => pm.response.to.have.status(401));"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "Auth - Me (Bearer)",
+   "request": {
+    "method": "GET",
+    "url": "{{base_url}}/api/auth/me",
+    "header": [
+     {
+      "key": "Authorization",
+      "value": "Bearer {{token_a}}"
+     }
+    ]
+   },
+   "event": [
+    {
+     "listen": "test",
+     "script": {
+      "exec": [
+       "pm.test('200 OK', () => pm.response.to.have.status(200));",
+       "const b = pm.response.json();",
+       "pm.test('email matches', () => pm.expect(b.email).to.eql(pm.collectionVariables.get('email_a')));",
+       "pm.test('has id', () => pm.expect(b.id).to.be.a('string'));",
+       "pm.test('no password_hash', () => pm.expect(pm.response.text()).to.not.include('password_hash'));"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "Auth - Me without token -> 401",
+   "request": {
+    "method": "GET",
+    "url": "{{base_url}}/api/auth/me",
+    "header": []
+   },
+   "event": [
+    {
+     "listen": "test",
+     "script": {
+      "exec": [
+       "pm.test('401', () => pm.response.to.have.status(401));"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "Auth - Forgot password (known email)",
+   "request": {
+    "method": "POST",
+    "url": "{{base_url}}/api/auth/forgot-password",
+    "header": [
+     {
+      "key": "Content-Type",
+      "value": "application/json"
+     }
+    ],
+    "body": {
+     "mode": "raw",
+     "raw": "{\n  \"email\": \"{{email_a}}\"\n}"
+    }
+   },
+   "event": [
+    {
+     "listen": "test",
+     "script": {
+      "exec": [
+       "pm.test('200 OK', () => pm.response.to.have.status(200));",
+       "const b = pm.response.json();",
+       "pm.collectionVariables.set('forgot_message', b.message);",
+       "pm.test('dev-mode returns a 6-digit code', () => pm.expect(String(b.reset_code)).to.match(/^[0-9]{6}$/));",
+       "pm.collectionVariables.set('reset_code', b.reset_code);"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "Auth - Forgot password (unknown email, no enumeration)",
+   "request": {
+    "method": "POST",
+    "url": "{{base_url}}/api/auth/forgot-password",
+    "header": [
+     {
+      "key": "Content-Type",
+      "value": "application/json"
+     }
+    ],
+    "body": {
+     "mode": "raw",
+     "raw": "{\n  \"email\": \"ghost-{{run_id}}@demo.com\"\n}"
+    }
+   },
+   "event": [
+    {
+     "listen": "test",
+     "script": {
+      "exec": [
+       "pm.test('200 OK', () => pm.response.to.have.status(200));",
+       "const b = pm.response.json();",
+       "pm.test('identical message', () => pm.expect(b.message).to.eql(pm.collectionVariables.get('forgot_message')));",
+       "pm.test('no code for unknown email', () => pm.expect(b.reset_code).to.be.null);"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "Auth - Reset password",
+   "request": {
+    "method": "POST",
+    "url": "{{base_url}}/api/auth/reset-password",
+    "header": [
+     {
+      "key": "Content-Type",
+      "value": "application/json"
+     }
+    ],
+    "body": {
+     "mode": "raw",
+     "raw": "{\n  \"email\": \"{{email_a}}\",\n  \"code\": \"{{reset_code}}\",\n  \"new_password\": \"N3wStrongPass9\"\n}"
+    }
+   },
+   "event": [
+    {
+     "listen": "test",
+     "script": {
+      "exec": [
+       "pm.test('200 OK', () => pm.response.to.have.status(200));",
+       "pm.test('success', () => pm.expect(pm.response.json().status).to.eql('success'));"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "Auth - Signin with OLD password -> 401",
+   "request": {
+    "method": "POST",
+    "url": "{{base_url}}/api/auth/signin",
+    "header": [
+     {
+      "key": "Content-Type",
+      "value": "application/json"
+     }
+    ],
+    "body": {
+     "mode": "raw",
+     "raw": "{\n  \"email\": \"{{email_a}}\",\n  \"password\": \"Str0ngPass1\"\n}"
+    }
+   },
+   "event": [
+    {
+     "listen": "test",
+     "script": {
+      "exec": [
+       "pm.test('401 - old password rejected', () => pm.response.to.have.status(401));"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "Auth - Signin with NEW password",
+   "request": {
+    "method": "POST",
+    "url": "{{base_url}}/api/auth/signin",
+    "header": [
+     {
+      "key": "Content-Type",
+      "value": "application/json"
+     }
+    ],
+    "body": {
+     "mode": "raw",
+     "raw": "{\n  \"email\": \"{{email_a}}\",\n  \"password\": \"N3wStrongPass9\"\n}"
+    }
+   },
+   "event": [
+    {
+     "listen": "test",
+     "script": {
+      "exec": [
+       "pm.test('200 OK', () => pm.response.to.have.status(200));",
+       "pm.collectionVariables.set('token_a', pm.response.json().access_token);"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "Auth - Reset password, reuse code -> 400",
+   "request": {
+    "method": "POST",
+    "url": "{{base_url}}/api/auth/reset-password",
+    "header": [
+     {
+      "key": "Content-Type",
+      "value": "application/json"
+     }
+    ],
+    "body": {
+     "mode": "raw",
+     "raw": "{\n  \"email\": \"{{email_a}}\",\n  \"code\": \"{{reset_code}}\",\n  \"new_password\": \"N3wStrongPass9\"\n}"
+    }
+   },
+   "event": [
+    {
+     "listen": "test",
+     "script": {
+      "exec": [
+       "pm.test('400 - generic', () => pm.response.to.have.status(400));",
+       "pm.test('generic message', () => pm.expect(pm.response.json().message).to.eql('Invalid or expired verification code.'));"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "Extract CV - no token -> 401",
+   "request": {
+    "method": "POST",
+    "url": "{{base_url}}/api/extract-cv",
+    "header": [],
+    "body": {
+     "mode": "formdata",
+     "formdata": [
+      {
+       "key": "file",
+       "type": "file",
+       "src": "sample_resume.txt"
+      }
+     ]
+    }
+   },
+   "event": [
+    {
+     "listen": "test",
+     "script": {
+      "exec": [
+       "pm.test('401', () => pm.response.to.have.status(401));"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "Extract CV - with language (Bearer)",
+   "request": {
+    "method": "POST",
+    "url": "{{base_url}}/api/extract-cv",
+    "header": [
+     {
+      "key": "Authorization",
+      "value": "Bearer {{token_a}}"
+     }
+    ],
+    "body": {
+     "mode": "formdata",
+     "formdata": [
+      {
+       "key": "file",
+       "type": "file",
+       "src": "sample_resume.txt"
+      },
+      {
+       "key": "language",
+       "value": "{{language}}",
+       "type": "text"
+      }
+     ]
+    }
+   },
+   "event": [
+    {
+     "listen": "test",
+     "script": {
+      "exec": [
+       "pm.test('200 OK', () => pm.response.to.have.status(200));",
+       "const b = pm.response.json();",
+       "pm.test('status success', () => pm.expect(b.status).to.eql('success'));",
+       "pm.test('name extracted', () => pm.expect(b.cv_profile.name).to.match(/John/i));",
+       "pm.test('email extracted', () => pm.expect(b.cv_profile.email).to.eql('john.doe@example.com'));",
+       "pm.test('confidence has 5 keys', () => pm.expect(Object.keys(b.confidence_scores).sort()).to.eql(['contact','education','experience','projects','skills']));",
+       "pm.test('skills flat list of strings', () => (b.cv_profile.skills||[]).forEach(s => pm.expect(s).to.be.a('string')));"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "Extract CV - invalid language -> 422",
+   "request": {
+    "method": "POST",
+    "url": "{{base_url}}/api/extract-cv",
+    "header": [
+     {
+      "key": "Authorization",
+      "value": "Bearer {{token_a}}"
+     }
+    ],
+    "body": {
+     "mode": "formdata",
+     "formdata": [
+      {
+       "key": "file",
+       "type": "file",
+       "src": "sample_resume.txt"
+      },
+      {
+       "key": "language",
+       "value": "de",
+       "type": "text"
+      }
+     ]
+    }
+   },
+   "event": [
+    {
+     "listen": "test",
+     "script": {
+      "exec": [
+       "pm.test('422', () => pm.response.to.have.status(422));"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "Extract CV - empty file -> 400",
+   "request": {
+    "method": "POST",
+    "url": "{{base_url}}/api/extract-cv",
+    "header": [
+     {
+      "key": "Authorization",
+      "value": "Bearer {{token_a}}"
+     }
+    ],
+    "body": {
+     "mode": "formdata",
+     "formdata": [
+      {
+       "key": "file",
+       "type": "file",
+       "src": "empty.txt"
+      }
+     ]
+    }
+   },
+   "event": [
+    {
+     "listen": "test",
+     "script": {
+      "exec": [
+       "pm.test('400', () => pm.response.to.have.status(400));"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "Generate CV - no token -> 401",
+   "request": {
+    "method": "POST",
+    "url": "{{base_url}}/api/generate-cv",
+    "header": [
+     {
+      "key": "Content-Type",
+      "value": "application/json"
+     }
+    ],
+    "body": {
+     "mode": "raw",
+     "raw": "{\"language\": \"fr\", \"job_description\": \"Nous recrutons un ingenieur backend Python, FastAPI, PostgreSQL, Kubernetes.\", \"cv_profile\": {\"name\": \"Alice Martin\", \"email\": \"alice@demo.com\", \"phone\": \"+212 600 112233\", \"linkedin\": \"linkedin.com/in/alicemartin\", \"professional_summary\": \"Backend engineer focused on data platforms and API design.\", \"education\": [{\"institution\": \"INSEA\", \"degree\": \"Master\", \"field\": \"Data Science\", \"start_date\": \"2020\", \"end_date\": \"2022\"}], \"experience\": [{\"company\": \"Acme Corp\", \"position\": \"Software Engineer\", \"period\": \"Jan 2021 - Present\", \"achievements\": [\"Shipped the billing service handling 2M requests/day\"], \"technologies\": [\"Python\", \"PostgreSQL\", \"FastAPI\"]}], \"projects\": [], \"skills\": [{\"category\": \"Languages\", \"skills\": [\"Python\", \"SQL\"]}], \"languages\": [{\"language\": \"English\", \"level\": \"Fluent\"}], \"certifications\": []}}"
+    }
+   },
+   "event": [
+    {
+     "listen": "test",
+     "script": {
+      "exec": [
+       "pm.test('401', () => pm.response.to.have.status(401));"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "Generate CV - FR (Bearer, JSON + MinIO URL)",
+   "request": {
+    "method": "POST",
+    "url": "{{base_url}}/api/generate-cv",
+    "header": [
+     {
+      "key": "Content-Type",
+      "value": "application/json"
+     },
+     {
+      "key": "Authorization",
+      "value": "Bearer {{token_a}}"
+     }
+    ],
+    "body": {
+     "mode": "raw",
+     "raw": "{\n  \"language\": \"fr\",\n  \"job_description\": \"Nous recrutons un ingenieur backend Python, FastAPI, PostgreSQL, Kubernetes.\",\n  \"cv_profile\": {\n    \"name\": \"Alice Martin\",\n    \"email\": \"alice@demo.com\",\n    \"phone\": \"+212 600 112233\",\n    \"linkedin\": \"linkedin.com/in/alicemartin\",\n    \"professional_summary\": \"Backend engineer focused on data platforms and API design.\",\n    \"education\": [\n      {\n        \"institution\": \"INSEA\",\n        \"degree\": \"Master\",\n        \"field\": \"Data Science\",\n        \"start_date\": \"2020\",\n        \"end_date\": \"2022\"\n      }\n    ],\n    \"experience\": [\n      {\n        \"company\": \"Acme Corp\",\n        \"position\": \"Software Engineer\",\n        \"period\": \"Jan 2021 - Present\",\n        \"achievements\": [\n          \"Shipped the billing service handling 2M requests/day\"\n        ],\n        \"technologies\": [\n          \"Python\",\n          \"PostgreSQL\",\n          \"FastAPI\"\n        ]\n      }\n    ],\n    \"projects\": [],\n    \"skills\": [\n      {\n        \"category\": \"Languages\",\n        \"skills\": [\n          \"Python\",\n          \"SQL\"\n        ]\n      }\n    ],\n    \"languages\": [\n      {\n        \"language\": \"English\",\n        \"level\": \"Fluent\"\n      }\n    ],\n    \"certifications\": []\n  }\n}"
+    }
+   },
+   "event": [
+    {
+     "listen": "test",
+     "script": {
+      "exec": [
+       "pm.test('200 OK', () => pm.response.to.have.status(200));",
+       "const b = pm.response.json();",
+       "pm.test('status success', () => pm.expect(b.status).to.eql('success'));",
+       "pm.test('has generated_cv_id', () => pm.expect(b.generated_cv_id).to.be.a('string'));",
+       "pm.test('language fr', () => pm.expect(b.language).to.eql('fr'));",
+       "pm.test('ats_score is a number', () => pm.expect(b.ats_score).to.be.a('number'));",
+       "pm.test('filename ends .pdf', () => pm.expect(b.filename).to.match(/\\.pdf$/));",
+       "pm.test('download_url is a presigned URL', () => pm.expect(b.download_url).to.match(/X-Amz-Signature=/));",
+       "pm.test('expires_in > 0', () => pm.expect(b.expires_in).to.be.above(0));",
+       "pm.test('response is JSON, not a PDF stream', () => pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json'));",
+       "pm.collectionVariables.set('cv_id', b.generated_cv_id);",
+       "// snapshot the gemini call counter AFTER the first (cache-priming) generation",
+       "pm.sendRequest(pm.environment.get('base_url') + '/api/stats', (e, r) => {",
+       "  if (!e) pm.collectionVariables.set('calls_after_first_gen', r.json().total_calls);",
+       "});"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "Generate CV - repeat identical (cache hit)",
+   "request": {
+    "method": "POST",
+    "url": "{{base_url}}/api/generate-cv",
+    "header": [
+     {
+      "key": "Content-Type",
+      "value": "application/json"
+     },
+     {
+      "key": "Authorization",
+      "value": "Bearer {{token_a}}"
+     }
+    ],
+    "body": {
+     "mode": "raw",
+     "raw": "{\n  \"language\": \"fr\",\n  \"job_description\": \"Nous recrutons un ingenieur backend Python, FastAPI, PostgreSQL, Kubernetes.\",\n  \"cv_profile\": {\n    \"name\": \"Alice Martin\",\n    \"email\": \"alice@demo.com\",\n    \"phone\": \"+212 600 112233\",\n    \"linkedin\": \"linkedin.com/in/alicemartin\",\n    \"professional_summary\": \"Backend engineer focused on data platforms and API design.\",\n    \"education\": [\n      {\n        \"institution\": \"INSEA\",\n        \"degree\": \"Master\",\n        \"field\": \"Data Science\",\n        \"start_date\": \"2020\",\n        \"end_date\": \"2022\"\n      }\n    ],\n    \"experience\": [\n      {\n        \"company\": \"Acme Corp\",\n        \"position\": \"Software Engineer\",\n        \"period\": \"Jan 2021 - Present\",\n        \"achievements\": [\n          \"Shipped the billing service handling 2M requests/day\"\n        ],\n        \"technologies\": [\n          \"Python\",\n          \"PostgreSQL\",\n          \"FastAPI\"\n        ]\n      }\n    ],\n    \"projects\": [],\n    \"skills\": [\n      {\n        \"category\": \"Languages\",\n        \"skills\": [\n          \"Python\",\n          \"SQL\"\n        ]\n      }\n    ],\n    \"languages\": [\n      {\n        \"language\": \"English\",\n        \"level\": \"Fluent\"\n      }\n    ],\n    \"certifications\": []\n  }\n}"
+    }
+   },
+   "event": [
+    {
+     "listen": "prerequest",
+     "script": {
+      "exec": [
+       "if (!pm.collectionVariables.get('cv_id')) { pm.execution.skipRequest(); }"
+      ]
+     }
+    },
+    {
+     "listen": "test",
+     "script": {
+      "exec": [
+       "pm.test('200 OK', () => pm.response.to.have.status(200));",
+       "pm.test('fast (< 3s) - the whole LLM pipeline is skipped by the app cache', () => pm.expect(pm.response.responseTime).to.be.below(3000));",
+       "pm.sendRequest(pm.environment.get('base_url') + '/api/stats', (e, r) => {",
+       "  if (e) return;",
+       "  const after = r.json().total_calls;",
+       "  const before = Number(pm.collectionVariables.get('calls_after_first_gen'));",
+       "  pm.test('no new gemini calls on the identical repeat (' + before + ' -> ' + after + ')', () => pm.expect(after - before).to.be.at.most(0));",
+       "});"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "Generate CV - invalid language -> 422",
+   "request": {
+    "method": "POST",
+    "url": "{{base_url}}/api/generate-cv",
+    "header": [
+     {
+      "key": "Content-Type",
+      "value": "application/json"
+     },
+     {
+      "key": "Authorization",
+      "value": "Bearer {{token_a}}"
+     }
+    ],
+    "body": {
+     "mode": "raw",
+     "raw": "{ \"language\": \"es\", \"cv_profile\": { \"name\": \"X\", \"email\": \"x@y.com\", \"phone\": \"+1\" } }"
+    }
+   },
+   "event": [
+    {
+     "listen": "test",
+     "script": {
+      "exec": [
+       "pm.test('422', () => pm.response.to.have.status(422));"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "Generate CV - missing email -> 422",
+   "request": {
+    "method": "POST",
+    "url": "{{base_url}}/api/generate-cv",
+    "header": [
+     {
+      "key": "Content-Type",
+      "value": "application/json"
+     },
+     {
+      "key": "Authorization",
+      "value": "Bearer {{token_a}}"
+     }
+    ],
+    "body": {
+     "mode": "raw",
+     "raw": "{ \"language\": \"en\", \"cv_profile\": { \"name\": \"X\", \"phone\": \"+1\" } }"
+    }
+   },
+   "event": [
+    {
+     "listen": "test",
+     "script": {
+      "exec": [
+       "pm.test('422', () => pm.response.to.have.status(422));"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "Optimize existing CV - EN (Bearer, JSON)",
+   "request": {
+    "method": "POST",
+    "url": "{{base_url}}/api/optimize-existing-cv",
+    "header": [
+     {
+      "key": "Content-Type",
+      "value": "application/json"
+     },
+     {
+      "key": "Authorization",
+      "value": "Bearer {{token_a}}"
+     }
+    ],
+    "body": {
+     "mode": "raw",
+     "raw": "{\n  \"language\": \"en\",\n  \"job_description\": \"Nous recrutons un ingenieur backend Python, FastAPI, PostgreSQL, Kubernetes.\",\n  \"cv_profile\": {\n    \"name\": \"Alice Martin\",\n    \"email\": \"alice@demo.com\",\n    \"phone\": \"+212 600 112233\",\n    \"linkedin\": \"linkedin.com/in/alicemartin\",\n    \"professional_summary\": \"Backend engineer focused on data platforms and API design.\",\n    \"education\": [\n      {\n        \"institution\": \"INSEA\",\n        \"degree\": \"Master\",\n        \"field\": \"Data Science\",\n        \"start_date\": \"2020\",\n        \"end_date\": \"2022\"\n      }\n    ],\n    \"experience\": [\n      {\n        \"company\": \"Acme Corp\",\n        \"position\": \"Software Engineer\",\n        \"period\": \"Jan 2021 - Present\",\n        \"achievements\": [\n          \"Shipped the billing service handling 2M requests/day\"\n        ],\n        \"technologies\": [\n          \"Python\",\n          \"PostgreSQL\",\n          \"FastAPI\"\n        ]\n      }\n    ],\n    \"projects\": [],\n    \"skills\": [\n      {\n        \"category\": \"Languages\",\n        \"skills\": [\n          \"Python\",\n          \"SQL\"\n        ]\n      }\n    ],\n    \"languages\": [\n      {\n        \"language\": \"English\",\n        \"level\": \"Fluent\"\n      }\n    ],\n    \"certifications\": []\n  }\n}"
+    }
+   },
+   "event": [
+    {
+     "listen": "test",
+     "script": {
+      "exec": [
+       "pm.test('200 OK', () => pm.response.to.have.status(200));",
+       "const b = pm.response.json();",
+       "pm.test('language en', () => pm.expect(b.language).to.eql('en'));",
+       "pm.test('download_url present', () => pm.expect(b.download_url).to.match(/X-Amz-Signature=/));"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "List CVs (owner)",
+   "request": {
+    "method": "GET",
+    "url": "{{base_url}}/api/cvs",
+    "header": [
+     {
+      "key": "Authorization",
+      "value": "Bearer {{token_a}}"
+     }
+    ]
+   },
+   "event": [
+    {
+     "listen": "prerequest",
+     "script": {
+      "exec": [
+       "if (!pm.collectionVariables.get('cv_id')) { pm.execution.skipRequest(); }"
+      ]
+     }
+    },
+    {
+     "listen": "test",
+     "script": {
+      "exec": [
+       "pm.test('200 OK', () => pm.response.to.have.status(200));",
+       "const b = pm.response.json();",
+       "pm.test('is an array', () => pm.expect(b).to.be.an('array'));",
+       "pm.test('contains the generated CV', () => pm.expect(b.map(x => x.id)).to.include(pm.collectionVariables.get('cv_id')));",
+       "pm.test('newest first', () => { const t = b.map(x => x.created_at); pm.expect(t).to.eql(t.slice().sort().reverse()); });"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "Get CV metadata",
+   "request": {
+    "method": "GET",
+    "url": "{{base_url}}/api/cvs/{{cv_id}}",
+    "header": [
+     {
+      "key": "Authorization",
+      "value": "Bearer {{token_a}}"
+     }
+    ]
+   },
+   "event": [
+    {
+     "listen": "prerequest",
+     "script": {
+      "exec": [
+       "if (!pm.collectionVariables.get('cv_id')) { pm.execution.skipRequest(); }"
+      ]
+     }
+    },
+    {
+     "listen": "test",
+     "script": {
+      "exec": [
+       "pm.test('200 OK', () => pm.response.to.have.status(200));",
+       "pm.test('id matches', () => pm.expect(pm.response.json().id).to.eql(pm.collectionVariables.get('cv_id')));"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "Get unknown CV -> 404",
+   "request": {
+    "method": "GET",
+    "url": "{{base_url}}/api/cvs/does-not-exist",
+    "header": [
+     {
+      "key": "Authorization",
+      "value": "Bearer {{token_a}}"
+     }
+    ]
+   },
+   "event": [
+    {
+     "listen": "test",
+     "script": {
+      "exec": [
+       "pm.test('404', () => pm.response.to.have.status(404));"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "Download CV (fresh presigned URL)",
+   "request": {
+    "method": "GET",
+    "url": "{{base_url}}/api/cvs/{{cv_id}}/download",
+    "header": [
+     {
+      "key": "Authorization",
+      "value": "Bearer {{token_a}}"
+     }
+    ]
+   },
+   "event": [
+    {
+     "listen": "prerequest",
+     "script": {
+      "exec": [
+       "if (!pm.collectionVariables.get('cv_id')) { pm.execution.skipRequest(); }"
+      ]
+     }
+    },
+    {
+     "listen": "test",
+     "script": {
+      "exec": [
+       "pm.test('200 OK', () => pm.response.to.have.status(200));",
+       "const b = pm.response.json();",
+       "pm.test('download_url', () => pm.expect(b.download_url).to.match(/X-Amz-Signature=/));",
+       "pm.test('expires_in', () => pm.expect(b.expires_in).to.be.above(0));"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "Generate letter - FR (Bearer, JSON)",
+   "request": {
+    "method": "POST",
+    "url": "{{base_url}}/api/generate-letter",
+    "header": [
+     {
+      "key": "Content-Type",
+      "value": "application/json"
+     },
+     {
+      "key": "Authorization",
+      "value": "Bearer {{token_a}}"
+     }
+    ],
+    "body": {
+     "mode": "raw",
+     "raw": "{\n  \"language\": \"fr\",\n  \"job_description\": \"Nous recrutons un Full Stack Developer (React + Node.js) chez TechNova, Casablanca.\",\n  \"cv_profile\": {\n    \"name\": \"Alice Martin\",\n    \"email\": \"alice@demo.com\",\n    \"phone\": \"+212 600 112233\",\n    \"linkedin\": \"linkedin.com/in/alicemartin\",\n    \"professional_summary\": \"Backend engineer focused on data platforms and API design.\",\n    \"education\": [\n      {\n        \"institution\": \"INSEA\",\n        \"degree\": \"Master\",\n        \"field\": \"Data Science\",\n        \"start_date\": \"2020\",\n        \"end_date\": \"2022\"\n      }\n    ],\n    \"experience\": [\n      {\n        \"company\": \"Acme Corp\",\n        \"position\": \"Software Engineer\",\n        \"period\": \"Jan 2021 - Present\",\n        \"achievements\": [\n          \"Shipped the billing service handling 2M requests/day\"\n        ],\n        \"technologies\": [\n          \"Python\",\n          \"PostgreSQL\",\n          \"FastAPI\"\n        ]\n      }\n    ],\n    \"projects\": [],\n    \"skills\": [\n      {\n        \"category\": \"Languages\",\n        \"skills\": [\n          \"Python\",\n          \"SQL\"\n        ]\n      }\n    ],\n    \"languages\": [\n      {\n        \"language\": \"English\",\n        \"level\": \"Fluent\"\n      }\n    ],\n    \"certifications\": []\n  }\n}"
+    }
+   },
+   "event": [
+    {
+     "listen": "test",
+     "script": {
+      "exec": [
+       "pm.test('200 OK', () => pm.response.to.have.status(200));",
+       "const b = pm.response.json();",
+       "pm.test('has generated_letter_id', () => pm.expect(b.generated_letter_id).to.be.a('string'));",
+       "pm.test('language fr', () => pm.expect(b.language).to.eql('fr'));",
+       "pm.test('filename cover_letter', () => pm.expect(b.filename).to.include('cover_letter_'));",
+       "pm.test('download_url present', () => pm.expect(b.download_url).to.match(/X-Amz-Signature=/));",
+       "pm.collectionVariables.set('letter_id', b.generated_letter_id);"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "Generate letter - missing job_description -> 422",
+   "request": {
+    "method": "POST",
+    "url": "{{base_url}}/api/generate-letter",
+    "header": [
+     {
+      "key": "Content-Type",
+      "value": "application/json"
+     },
+     {
+      "key": "Authorization",
+      "value": "Bearer {{token_a}}"
+     }
+    ],
+    "body": {
+     "mode": "raw",
+     "raw": "{\"language\": \"en\", \"job_description\": \"\", \"cv_profile\": {\"name\": \"Alice Martin\", \"email\": \"alice@demo.com\", \"phone\": \"+212 600 112233\", \"linkedin\": \"linkedin.com/in/alicemartin\", \"professional_summary\": \"Backend engineer focused on data platforms and API design.\", \"education\": [{\"institution\": \"INSEA\", \"degree\": \"Master\", \"field\": \"Data Science\", \"start_date\": \"2020\", \"end_date\": \"2022\"}], \"experience\": [{\"company\": \"Acme Corp\", \"position\": \"Software Engineer\", \"period\": \"Jan 2021 - Present\", \"achievements\": [\"Shipped the billing service handling 2M requests/day\"], \"technologies\": [\"Python\", \"PostgreSQL\", \"FastAPI\"]}], \"projects\": [], \"skills\": [{\"category\": \"Languages\", \"skills\": [\"Python\", \"SQL\"]}], \"languages\": [{\"language\": \"English\", \"level\": \"Fluent\"}], \"certifications\": []}}"
+    }
+   },
+   "event": [
+    {
+     "listen": "test",
+     "script": {
+      "exec": [
+       "pm.test('422', () => pm.response.to.have.status(422));"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "List letters (owner)",
+   "request": {
+    "method": "GET",
+    "url": "{{base_url}}/api/letters",
+    "header": [
+     {
+      "key": "Authorization",
+      "value": "Bearer {{token_a}}"
+     }
+    ]
+   },
+   "event": [
+    {
+     "listen": "prerequest",
+     "script": {
+      "exec": [
+       "if (!pm.collectionVariables.get('letter_id')) { pm.execution.skipRequest(); }"
+      ]
+     }
+    },
+    {
+     "listen": "test",
+     "script": {
+      "exec": [
+       "pm.test('200 OK', () => pm.response.to.have.status(200));",
+       "pm.test('contains the generated letter', () => pm.expect(pm.response.json().map(x => x.id)).to.include(pm.collectionVariables.get('letter_id')));"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "Auth - Signup user B",
+   "request": {
+    "method": "POST",
+    "url": "{{base_url}}/api/auth/signup",
+    "header": [
+     {
+      "key": "Content-Type",
+      "value": "application/json"
+     }
+    ],
+    "body": {
+     "mode": "raw",
+     "raw": "{\n  \"email\": \"{{email_b}}\",\n  \"password\": \"Str0ngPass1\"\n}"
+    }
+   },
+   "event": [
+    {
+     "listen": "test",
+     "script": {
+      "exec": [
+       "pm.test('201', () => pm.response.to.have.status(201));",
+       "pm.collectionVariables.set('token_b', pm.response.json().access_token);"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "Ownership - B cannot GET A's CV -> 403",
+   "request": {
+    "method": "GET",
+    "url": "{{base_url}}/api/cvs/{{cv_id}}",
+    "header": [
+     {
+      "key": "Authorization",
+      "value": "Bearer {{token_b}}"
+     }
+    ]
+   },
+   "event": [
+    {
+     "listen": "prerequest",
+     "script": {
+      "exec": [
+       "if (!pm.collectionVariables.get('cv_id')) { pm.execution.skipRequest(); }"
+      ]
+     }
+    },
+    {
+     "listen": "test",
+     "script": {
+      "exec": [
+       "pm.test('403', () => pm.response.to.have.status(403));"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "Ownership - B cannot DELETE A's CV -> 403",
+   "request": {
+    "method": "DELETE",
+    "url": "{{base_url}}/api/cvs/{{cv_id}}",
+    "header": [
+     {
+      "key": "Authorization",
+      "value": "Bearer {{token_b}}"
+     }
+    ]
+   },
+   "event": [
+    {
+     "listen": "prerequest",
+     "script": {
+      "exec": [
+       "if (!pm.collectionVariables.get('cv_id')) { pm.execution.skipRequest(); }"
+      ]
+     }
+    },
+    {
+     "listen": "test",
+     "script": {
+      "exec": [
+       "pm.test('403', () => pm.response.to.have.status(403));"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "Ownership - B's own CV list is empty",
+   "request": {
+    "method": "GET",
+    "url": "{{base_url}}/api/cvs",
+    "header": [
+     {
+      "key": "Authorization",
+      "value": "Bearer {{token_b}}"
+     }
+    ]
+   },
+   "event": [
+    {
+     "listen": "test",
+     "script": {
+      "exec": [
+       "pm.test('200 OK', () => pm.response.to.have.status(200));",
+       "pm.test('empty', () => pm.expect(pm.response.json()).to.eql([]));"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "Delete CV (owner) -> 204",
+   "request": {
+    "method": "DELETE",
+    "url": "{{base_url}}/api/cvs/{{cv_id}}",
+    "header": [
+     {
+      "key": "Authorization",
+      "value": "Bearer {{token_a}}"
+     }
+    ]
+   },
+   "event": [
+    {
+     "listen": "prerequest",
+     "script": {
+      "exec": [
+       "if (!pm.collectionVariables.get('cv_id')) { pm.execution.skipRequest(); }"
+      ]
+     }
+    },
+    {
+     "listen": "test",
+     "script": {
+      "exec": [
+       "pm.test('204', () => pm.response.to.have.status(204));"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "Get deleted CV -> 404",
+   "request": {
+    "method": "GET",
+    "url": "{{base_url}}/api/cvs/{{cv_id}}",
+    "header": [
+     {
+      "key": "Authorization",
+      "value": "Bearer {{token_a}}"
+     }
+    ]
+   },
+   "event": [
+    {
+     "listen": "prerequest",
+     "script": {
+      "exec": [
+       "if (!pm.collectionVariables.get('cv_id')) { pm.execution.skipRequest(); }"
+      ]
+     }
+    },
+    {
+     "listen": "test",
+     "script": {
+      "exec": [
+       "pm.test('404', () => pm.response.to.have.status(404));"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "Delete letter (owner) -> 204",
+   "request": {
+    "method": "DELETE",
+    "url": "{{base_url}}/api/letters/{{letter_id}}",
+    "header": [
+     {
+      "key": "Authorization",
+      "value": "Bearer {{token_a}}"
+     }
+    ]
+   },
+   "event": [
+    {
+     "listen": "prerequest",
+     "script": {
+      "exec": [
+       "if (!pm.collectionVariables.get('letter_id')) { pm.execution.skipRequest(); }"
+      ]
+     }
+    },
+    {
+     "listen": "test",
+     "script": {
+      "exec": [
+       "pm.test('204', () => pm.response.to.have.status(204));"
+      ]
+     }
+    }
+   ]
+  }
+ ]
+}

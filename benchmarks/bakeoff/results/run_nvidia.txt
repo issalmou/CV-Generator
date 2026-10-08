@@ -1,0 +1,15 @@
+
+--- nvidia / nvidia/nemotron-3-super-120b-a12b ---
+  extract_experience         mode=none        OK   wall=  40.9s ttft=31.43 tok/s=47.6   jsonV=True halluc_free=True 
+  extract_experience         mode=json_object OK   wall=  25.0s ttft=25.01 tok/s=71.3   jsonV=True halluc_free=True 
+  extract_education          mode=none        OK   wall=  57.3s ttft=53.29 tok/s=28.6   jsonV=True halluc_free=True 
+  extract_education          mode=json_object OK   wall=  32.4s ttft=32.36 tok/s=48.7   jsonV=True halluc_free=True 
+  extract_skills             mode=none        OK   wall=   3.6s ttft=3.23  tok/s=120.7  jsonV=True halluc_free=True 
+  extract_skills             mode=json_object OK   wall=   3.2s ttft=3.18  tok/s=101.6  jsonV=True halluc_free=True 
+  profile_analysis           mode=none        OK   wall=  11.9s ttft=11.93 tok/s=125.7  jsonV=False halluc_free=None 
+  profile_analysis           mode=json_object FAIL wall=   0.6s ttft=-     tok/s=-      jsonV=None halluc_free=None ERR NotFoundError: Error code: 404
+  ats_keyword_extraction     mode=none        OK   wall=  36.1s ttft=36.06 tok/s=33.3   jsonV=False halluc_free=None 
+  ats_keyword_extraction     mode=json_object OK   wall=  11.2s ttft=11.2  tok/s=107.1  jsonV=False halluc_free=None 
+  conversation_agent         mode=none        FAIL wall=   0.5s ttft=-     tok/s=-      jsonV=None halluc_free=None ERR NotFoundError: Error code: 404
+
+appended to C:\Users\isalm\Documents\master_insea\projet_imgharne\cv-generator-final1\cv-generator\benchmarks\bakeoff\results\runs.jsonl

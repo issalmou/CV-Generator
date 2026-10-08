@@ -1,0 +1,12 @@
+{
+  "items": [
+    {
+      "Id": "300000123456789",
+      "Title": "Cloud Database Administrator",
+      "ExternalDescriptionStr": "<p>Administer and tune large Oracle and PostgreSQL estates in Oracle Cloud Infrastructure.</p>",
+      "ExternalResponsibilitiesStr": "<ul><li>Backup and recovery</li><li>Performance tuning</li></ul>",
+      "ExternalQualificationsStr": "<p>7+ years DBA experience; OCI certification a plus.</p>",
+      "CorporateDescriptionStr": "<p>We are a cloud infrastructure company.</p>"
+    }
+  ]
+}

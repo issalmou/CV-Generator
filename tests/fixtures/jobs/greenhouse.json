@@ -1,0 +1,24 @@
+{
+  "jobs": [
+    {
+      "id": 5501001,
+      "title": "Senior Data Scientist",
+      "updated_at": "2026-08-30T10:00:00-04:00",
+      "location": { "name": "Paris, France" },
+      "absolute_url": "https://boards.greenhouse.io/acme/jobs/5501001",
+      "content": "&lt;p&gt;Build ML models with Python and SQL.&lt;/p&gt;",
+      "departments": [ { "name": "Data Science" } ],
+      "metadata": []
+    },
+    {
+      "id": 5501002,
+      "title": "Machine Learning Intern",
+      "updated_at": "2026-09-01T09:00:00-04:00",
+      "location": { "name": "Remote - EU" },
+      "absolute_url": "https://boards.greenhouse.io/acme/jobs/5501002",
+      "content": "&lt;p&gt;6 month internship, Python.&lt;/p&gt;",
+      "departments": [ { "name": "Data Science" } ]
+    }
+  ],
+  "meta": { "total": 2 }
+}

@@ -1,0 +1,10 @@
+# SmartRecruiters company slugs — jobs.smartrecruiters.com/<Slug> (CASE-SENSITIVE)
+# Best-effort; a dead slug is skipped. Do not add fabricated slugs.
+Visa1
+BoschGroup
+McDonalds
+Publicis
+Ubisoft
+Skechers
+WilsonLanguageTraining
+SonyMusic

@@ -1,0 +1,28 @@
+[
+  {"legal": "Data provided by RemoteOK. See https://remoteok.com/api for terms."},
+  {
+    "id": "778001",
+    "slug": "data-scientist-acme",
+    "company": "Acme",
+    "company_url": "https://acme.example",
+    "position": "Data Scientist",
+    "tags": ["python", "sql", "machine learning"],
+    "location": "Europe",
+    "url": "https://remoteok.com/remote-jobs/778001",
+    "date": "2026-08-27T00:00:00+00:00",
+    "salary_min": 90000,
+    "salary_max": 130000,
+    "description": "<p>Remote data scientist.</p>"
+  },
+  {
+    "id": "778002",
+    "slug": "ml-intern-hooli",
+    "company": "Hooli",
+    "position": "ML Internship",
+    "tags": ["python"],
+    "location": "Worldwide",
+    "url": "https://remoteok.com/remote-jobs/778002",
+    "date": "2026-09-01T00:00:00+00:00",
+    "description": "<p>Internship.</p>"
+  }
+]

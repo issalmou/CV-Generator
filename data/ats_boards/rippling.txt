@@ -1,0 +1,3 @@
+# Rippling ATS board slugs — ats.rippling.com/<slug>
+# Best-effort; a dead slug is skipped. Do not add fabricated slugs.
+rippling

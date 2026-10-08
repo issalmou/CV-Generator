@@ -1,0 +1,20 @@
+# Lever public board tokens — jobs.lever.co/<token>
+# Best-effort; a dead token is skipped. Do not add fabricated slugs.
+netflix
+plaid
+spotify
+nubank
+revolut
+ramp
+brex
+attentive
+scaleai
+mistral
+huggingface
+notion
+figma
+canva
+gong
+verkada
+rippling
+kraken

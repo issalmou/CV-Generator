@@ -1,0 +1,29 @@
+{
+  "items": [
+    {
+      "TotalJobsCount": 2,
+      "requisitionList": [
+        {
+          "Id": "300000123456789",
+          "Title": "Cloud Database Administrator",
+          "PostedDate": "2026-08-25T00:00:00+00:00",
+          "PrimaryLocation": "Austin, TX, United States",
+          "PrimaryLocationCountry": "US",
+          "WorkplaceType": "HYBRID",
+          "secondaryLocations": [
+            { "Name": "Seattle, WA, United States" }
+          ]
+        },
+        {
+          "Id": "300000987654321",
+          "Title": "Software Development Intern",
+          "PostedDate": "2026-08-30T00:00:00+00:00",
+          "PrimaryLocation": "Remote, United States",
+          "PrimaryLocationCountry": "US",
+          "WorkplaceType": "REMOTE",
+          "secondaryLocations": []
+        }
+      ]
+    }
+  ]
+}

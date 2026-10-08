@@ -1,0 +1,30 @@
+{
+  "count": 2,
+  "results": [
+    {
+      "id": "4700001",
+      "redirect_url": "https://www.adzuna.co.uk/land/ad/4700001",
+      "title": "Data Scientist",
+      "description": "Data science role using Python and SQL in London.",
+      "created": "2026-08-28T12:00:00Z",
+      "company": {"display_name": "Globex Ltd"},
+      "location": {"display_name": "London, UK", "area": ["UK", "London"]},
+      "salary_min": 55000,
+      "salary_max": 75000,
+      "contract_time": "full_time",
+      "contract_type": "permanent",
+      "category": {"label": "IT Jobs"}
+    },
+    {
+      "id": "4700002",
+      "redirect_url": "https://www.adzuna.co.uk/land/ad/4700002",
+      "title": "Data Science Intern",
+      "description": "Internship for a student. Python.",
+      "created": "2026-09-01T09:00:00Z",
+      "company": {"display_name": "Initech"},
+      "location": {"display_name": "Manchester, UK"},
+      "contract_time": "full_time",
+      "category": {"label": "Graduate Jobs"}
+    }
+  ]
+}

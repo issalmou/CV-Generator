@@ -1,0 +1,35 @@
+[
+  {
+    "id": 40001,
+    "uuid": "ripp-1111-aaaa",
+    "name": "Backend Engineer, Billing",
+    "url": "https://ats.rippling.com/acme/jobs/ripp-1111-aaaa",
+    "department": { "id": "d1", "label": "Engineering" },
+    "workLocation": { "id": "l1", "label": "New York, NY" },
+    "isRemote": false,
+    "employmentType": "FULL_TIME",
+    "descriptionHtml": "<p>Build the billing platform in <b>TypeScript</b> and <b>Node.js</b>.</p>",
+    "createdAt": "2026-08-18T00:00:00Z"
+  },
+  {
+    "id": 40001,
+    "uuid": "ripp-1111-aaaa",
+    "name": "Backend Engineer, Billing",
+    "url": "https://ats.rippling.com/acme/jobs/ripp-1111-aaaa",
+    "department": { "label": "Engineering" },
+    "workLocation": { "label": "Remote - US" },
+    "isRemote": true,
+    "employmentType": "FULL_TIME"
+  },
+  {
+    "id": 40002,
+    "uuid": "ripp-2222-bbbb",
+    "name": "People Operations Intern",
+    "url": "https://ats.rippling.com/acme/jobs/ripp-2222-bbbb",
+    "department": { "label": "People" },
+    "workLocation": { "label": "San Francisco, CA" },
+    "isRemote": false,
+    "employmentType": "INTERN",
+    "createdAt": "2026-08-27T00:00:00Z"
+  }
+]

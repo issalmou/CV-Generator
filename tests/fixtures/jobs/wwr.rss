@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>We Work Remotely: Remote Programming Jobs</title>
+    <link>https://weworkremotely.com/categories/remote-programming-jobs</link>
+    <item>
+      <title>Proxify AB: Senior Backend Developer (Python)</title>
+      <link>https://weworkremotely.com/remote-jobs/proxify-ab-senior-backend-developer-python-9</link>
+      <guid>https://weworkremotely.com/remote-jobs/proxify-ab-senior-backend-developer-python-9</guid>
+      <description>&lt;p&gt;Build backend services in Python and PostgreSQL.&lt;/p&gt;</description>
+      <pubDate>Fri, 29 Aug 2026 10:07:01 +0000</pubDate>
+      <region>Anywhere in the World</region>
+      <category>Back-End Programming</category>
+    </item>
+    <item>
+      <title>Acme Inc: Data Engineering Intern</title>
+      <link>https://weworkremotely.com/remote-jobs/acme-inc-data-engineering-intern-2</link>
+      <guid>https://weworkremotely.com/remote-jobs/acme-inc-data-engineering-intern-2</guid>
+      <description>&lt;p&gt;Internship building data pipelines with Python.&lt;/p&gt;</description>
+      <pubDate>Mon, 01 Sep 2026 08:00:00 +0000</pubDate>
+      <region>USA Only</region>
+      <category>Data</category>
+    </item>
+  </channel>
+</rss>

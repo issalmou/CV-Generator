@@ -1,0 +1,30 @@
+JOHN DOE
+john.doe@example.com | +212 600 112233 | linkedin.com/in/johndoe | github.com/johndoe
+Nationality: Moroccan
+Address: 12 Rue de la Paix, Rabat
+
+PROFESSIONAL SUMMARY
+Backend engineer focused on data platforms and API design.
+
+WORK EXPERIENCE
+Software Engineer, Acme Corp - Remote
+Jan 2021 - Present
+- Shipped the billing service handling 2M requests/day
+- Cut pipeline latency by 40%
+
+EDUCATION
+Master in Data Science, INSEA, 2024
+
+PROJECTS
+Portfolio site - personal website built with Next.js (github.com/johndoe/portfolio)
+
+SKILLS
+Languages: Python, SQL
+Databases: PostgreSQL, MongoDB
+Cloud & DevOps: Docker, Kubernetes, AWS
+
+LANGUAGES
+English (Fluent), French (Native), Arabic (Native)
+
+CERTIFICATIONS
+AWS Certified Solutions Architect, Amazon, 2023

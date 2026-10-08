@@ -1,0 +1,30 @@
+{
+  "data": [
+    {
+      "slug": "data-scientist-berlin-111",
+      "company_name": "Umbrella GmbH",
+      "title": "Data Scientist",
+      "description": "<p>Work on ML models with Python and SQL.</p>",
+      "remote": true,
+      "url": "https://www.arbeitnow.com/view/data-scientist-berlin-111",
+      "tags": ["Python", "SQL", "Machine Learning"],
+      "job_types": ["full_time"],
+      "location": "Berlin",
+      "created_at": 1788300000
+    },
+    {
+      "slug": "ml-intern-remote-222",
+      "company_name": "Hooli",
+      "title": "Machine Learning Internship",
+      "description": "<p>6 month internship, remote.</p>",
+      "remote": true,
+      "url": "https://www.arbeitnow.com/view/ml-intern-remote-222",
+      "tags": ["Python", "PyTorch"],
+      "job_types": ["internship"],
+      "location": "Remote",
+      "created_at": 1788400000
+    }
+  ],
+  "links": {"next": null},
+  "meta": {"current_page": 1}
+}

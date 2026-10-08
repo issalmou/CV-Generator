@@ -1,0 +1,27 @@
+{
+  "jobs": [
+    {
+      "guid": "hm-55001",
+      "title": "Data Scientist",
+      "companyName": "Stark Industries",
+      "applicationLink": "https://himalayas.app/jobs/stark-data-scientist",
+      "description": "<p>Remote data science role, Python and SQL.</p>",
+      "locationRestrictions": ["Europe", "North America"],
+      "categories": ["Data Science"],
+      "seniority": ["Senior"],
+      "employmentType": "Full-time",
+      "pubDate": "2026-08-26T00:00:00Z"
+    },
+    {
+      "guid": "hm-55002",
+      "title": "Junior ML Engineer",
+      "companyName": "Wayne Enterprises",
+      "applicationLink": "https://himalayas.app/jobs/wayne-junior-ml",
+      "description": "<p>Entry level ML engineer.</p>",
+      "locationRestrictions": ["Worldwide"],
+      "categories": ["Engineering"],
+      "seniority": ["Junior"],
+      "pubDate": "2026-09-01T00:00:00Z"
+    }
+  ]
+}

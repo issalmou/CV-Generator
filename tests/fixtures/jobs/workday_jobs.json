@@ -1,0 +1,20 @@
+{
+  "total": 2,
+  "jobPostings": [
+    {
+      "title": "Principal Software Engineer, Platform",
+      "externalPath": "/job/San-Jose-CA/Principal-Software-Engineer--Platform_JR1988021",
+      "locationsText": "San Jose, CA",
+      "postedOn": "Posted 3 Days Ago",
+      "bulletFields": ["JR1988021"],
+      "startDate": "2026-08-30"
+    },
+    {
+      "title": "Machine Learning Internship (Summer 2027)",
+      "externalPath": "/job/Remote-USA/Machine-Learning-Internship_JR1988044",
+      "locationsText": "2 Locations",
+      "postedOn": "Posted Today",
+      "bulletFields": ["JR1988044"]
+    }
+  ]
+}

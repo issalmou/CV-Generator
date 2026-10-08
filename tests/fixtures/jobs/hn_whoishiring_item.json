@@ -1,0 +1,29 @@
+{
+  "id": 40000001,
+  "title": "Ask HN: Who is hiring? (September 2026)",
+  "author": "whoishiring",
+  "created_at": "2026-09-01T15:00:00Z",
+  "children": [
+    {
+      "id": 40000101,
+      "author": "founder_a",
+      "created_at": "2026-09-01T16:10:00Z",
+      "text": "Globex | Senior Data Scientist | Paris, France | REMOTE (EU) | Full-time<p>We use Python, SQL and Airflow. Apply at https://globex.example/jobs/ds</p>",
+      "children": []
+    },
+    {
+      "id": 40000102,
+      "author": "founder_b",
+      "created_at": "2026-09-01T16:20:00Z",
+      "text": "Initech | Backend Engineer | London, UK | ONSITE<p>Go and Postgres. Email jobs@initech.example</p>",
+      "children": []
+    },
+    {
+      "id": 40000103,
+      "author": null,
+      "created_at": "2026-09-01T16:25:00Z",
+      "text": "deleted",
+      "children": []
+    }
+  ]
+}

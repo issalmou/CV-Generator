@@ -1,0 +1,32 @@
+{
+  "refineSearch": {
+    "totalHits": 2,
+    "data": {
+      "jobs": [
+        {
+          "jobId": "R-45678",
+          "title": "Senior Cloud Architect",
+          "applyUrl": "https://careers.acme.com/global/en/job/R-45678/apply",
+          "cityStateCountry": "Chicago, Illinois, United States",
+          "postedDate": "2026-08-21",
+          "category": "Technology",
+          "type": "Full-time",
+          "description": "<p>Design multi-cloud landing zones on <b>AWS</b> and <b>Azure</b>.</p>",
+          "ml_skills": ["AWS", "Azure", "Terraform"]
+        },
+        {
+          "jobId": "R-45699",
+          "title": "Finance Rotational Intern",
+          "applyUrl": "https://careers.acme.com/global/en/job/R-45699/apply",
+          "city": "New York",
+          "state": "New York",
+          "country": "United States",
+          "postedDate": "2026-08-28",
+          "category": "Finance",
+          "type": "Intern",
+          "description": "<p>A 12-week rotational internship across FP&A and Treasury.</p>"
+        }
+      ]
+    }
+  }
+}

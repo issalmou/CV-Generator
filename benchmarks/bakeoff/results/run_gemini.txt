@@ -1,0 +1,52 @@
+
+--- gemini / gemini-3.5-flash-lite ---
+  extract_experience         mode=none        OK   wall=   2.2s ttft=1.34  tok/s=171.9  jsonV=True halluc_free=True 
+  extract_experience         mode=json_schema OK   wall=   1.7s ttft=0.82  tok/s=234.7  jsonV=True halluc_free=True 
+  extract_education          mode=none        OK   wall=   1.0s ttft=0.6   tok/s=133.0  jsonV=True halluc_free=True 
+  extract_education          mode=json_schema OK   wall=   1.1s ttft=0.86  tok/s=111.7  jsonV=True halluc_free=True 
+  extract_projects           mode=none        OK   wall=   0.8s ttft=0.68  tok/s=95.1   jsonV=True halluc_free=True 
+  extract_projects           mode=json_schema OK   wall=   0.9s ttft=0.89  tok/s=58.2   jsonV=True halluc_free=True 
+  extract_skills             mode=none        OK   wall=   0.8s ttft=0.64  tok/s=54.7   jsonV=True halluc_free=True 
+  extract_skills             mode=json_schema OK   wall=   0.9s ttft=0.89  tok/s=43.2   jsonV=True halluc_free=True 
+  profile_analysis           mode=none        OK   wall=   1.4s ttft=0.66  tok/s=170.8  jsonV=True halluc_free=False 
+  profile_analysis           mode=json_schema OK   wall=   1.4s ttft=0.8   tok/s=166.9  jsonV=True halluc_free=True 
+  ats_keyword_extraction     mode=none        OK   wall=   1.1s ttft=0.81  tok/s=142.1  jsonV=True halluc_free=None 
+  ats_keyword_extraction     mode=json_schema OK   wall=   1.2s ttft=0.82  tok/s=108.4  jsonV=True halluc_free=None 
+  ats_content_optimization   mode=none        OK   wall=   1.7s ttft=0.77  tok/s=215.1  jsonV=True halluc_free=True 
+  cover_letter               mode=none        OK   wall=   1.9s ttft=0.85  tok/s=171.4  jsonV=None halluc_free=True 
+  conversation_agent         mode=none        OK   wall=   1.5s ttft=0.63  tok/s=207.8  jsonV=None halluc_free=True 
+  job_preference_extraction  mode=none        OK   wall=   0.9s ttft=0.77  tok/s=120.2  jsonV=None halluc_free=None 
+  job_preference_extraction  mode=json_schema OK   wall=   1.0s ttft=0.75  tok/s=123.5  jsonV=True halluc_free=None 
+
+--- gemini / gemini-3.1-flash-lite ---
+  extract_experience         mode=none        OK   wall=   1.8s ttft=0.84  tok/s=202.3  jsonV=True halluc_free=True 
+  extract_experience         mode=json_schema OK   wall=   1.8s ttft=0.89  tok/s=201.1  jsonV=True halluc_free=True 
+  extract_education          mode=none        OK   wall=   1.2s ttft=0.87  tok/s=110.3  jsonV=True halluc_free=True 
+  extract_education          mode=json_schema OK   wall=   1.1s ttft=0.74  tok/s=100.0  jsonV=True halluc_free=True 
+  extract_projects           mode=none        OK   wall=   0.9s ttft=0.7   tok/s=89.5   jsonV=True halluc_free=True 
+  extract_projects           mode=json_schema OK   wall=   0.8s ttft=0.72  tok/s=91.7   jsonV=True halluc_free=True 
+  extract_skills             mode=none        OK   wall=   1.1s ttft=0.91  tok/s=30.8   jsonV=True halluc_free=True 
+  extract_skills             mode=json_schema OK   wall=   0.9s ttft=0.84  tok/s=72.8   jsonV=True halluc_free=True 
+  profile_analysis           mode=none        OK   wall=   1.6s ttft=0.76  tok/s=144.2  jsonV=True halluc_free=False 
+  profile_analysis           mode=json_schema OK   wall=   1.7s ttft=0.84  tok/s=164.5  jsonV=True halluc_free=True 
+  ats_keyword_extraction     mode=none        OK   wall=   1.1s ttft=0.75  tok/s=134.6  jsonV=True halluc_free=None 
+  ats_keyword_extraction     mode=json_schema OK   wall=   1.3s ttft=1.03  tok/s=116.0  jsonV=True halluc_free=None 
+  ats_content_optimization   mode=none        OK   wall=   1.9s ttft=0.79  tok/s=201.0  jsonV=True halluc_free=True 
+  cover_letter               mode=none        OK   wall=   1.8s ttft=0.66  tok/s=205.1  jsonV=None halluc_free=True 
+  conversation_agent         mode=none        OK   wall=   2.3s ttft=0.77  tok/s=187.8  jsonV=None halluc_free=True 
+  job_preference_extraction  mode=none        OK   wall=   0.9s ttft=0.76  tok/s=122.1  jsonV=None halluc_free=None 
+  job_preference_extraction  mode=json_schema OK   wall=   1.2s ttft=0.71  tok/s=84.0   jsonV=True halluc_free=None 
+
+--- gemini / gemini-3.6-flash ---
+  extract_experience         mode=none        OK   wall=   9.4s ttft=7.73  tok/s=40.4   jsonV=True halluc_free=True 
+  extract_education          mode=none        OK   wall=   7.7s ttft=7.08  tok/s=16.8   jsonV=True halluc_free=True 
+  extract_projects           mode=none        OK   wall=   7.4s ttft=7.15  tok/s=7.2    jsonV=True halluc_free=True 
+  extract_skills             mode=none        OK   wall=   5.3s ttft=5.06  tok/s=8.1    jsonV=True halluc_free=True 
+  profile_analysis           mode=none        OK   wall=   9.0s ttft=8.97  tok/s=6.6    jsonV=False halluc_free=None 
+  ats_keyword_extraction     mode=none        OK   wall=   7.1s ttft=6.46  tok/s=20.4   jsonV=False halluc_free=None 
+  ats_content_optimization   mode=none        OK   wall=  18.1s ttft=16.41 tok/s=20.5   jsonV=True halluc_free=True 
+  cover_letter               mode=none        OK   wall=  12.4s ttft=11.07 tok/s=24.2   jsonV=None halluc_free=True 
+  conversation_agent         mode=none        OK   wall=   8.1s ttft=6.67  tok/s=32.4   jsonV=None halluc_free=True 
+  job_preference_extraction  mode=none        OK   wall=  20.2s ttft=20.0  tok/s=2.4    jsonV=None halluc_free=None 
+
+appended to C:\Users\isalm\Documents\master_insea\projet_imgharne\cv-generator-final1\cv-generator\benchmarks\bakeoff\results\runs.jsonl

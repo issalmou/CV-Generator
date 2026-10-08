@@ -1,0 +1,67 @@
+{
+  "apiVersion": "1",
+  "jobs": [
+    {
+      "id": "3f1c9a20-1111-4a10-9c00-aaaa00000001",
+      "title": "Senior Backend Engineer",
+      "location": "San Francisco, United States",
+      "secondaryLocations": [
+        { "location": "New York, United States" }
+      ],
+      "department": "Engineering",
+      "team": "Payments Platform",
+      "isListed": true,
+      "isRemote": false,
+      "descriptionHtml": "<div><p>We are hiring a <strong>Senior Backend Engineer</strong> to own our payments platform.</p><ul><li>Design Python services and PostgreSQL schemas</li><li>Scale gRPC APIs</li></ul></div>",
+      "descriptionPlain": "We are hiring a Senior Backend Engineer to own our payments platform.",
+      "publishedAt": "2026-08-20T09:00:00.000Z",
+      "employmentType": "FullTime",
+      "address": {
+        "postalAddress": {
+          "addressCountry": "US",
+          "addressRegion": "California",
+          "addressLocality": "San Francisco"
+        }
+      },
+      "jobUrl": "https://jobs.ashbyhq.com/acme/3f1c9a20-1111-4a10-9c00-aaaa00000001",
+      "applyUrl": "https://jobs.ashbyhq.com/acme/3f1c9a20-1111-4a10-9c00-aaaa00000001/application",
+      "compensation": {
+        "compensationTierSummary": "$180K – $220K",
+        "scrapeableCompensationSalarySummary": "$180,000 - $220,000 / year"
+      },
+      "shouldDisplayCompensationOnJobPostings": true
+    },
+    {
+      "id": "3f1c9a20-2222-4a10-9c00-aaaa00000002",
+      "title": "Data Science Intern",
+      "location": "Remote - EU",
+      "secondaryLocations": [],
+      "department": "Data",
+      "team": "ML",
+      "isListed": true,
+      "isRemote": true,
+      "descriptionHtml": "<p>Summer internship on our ML team. You will work with Python, pandas and SQL.</p>",
+      "descriptionPlain": "Summer internship on our ML team. You will work with Python, pandas and SQL.",
+      "publishedAt": "2026-08-28T12:00:00.000Z",
+      "employmentType": "Intern",
+      "address": null,
+      "jobUrl": "https://jobs.ashbyhq.com/acme/3f1c9a20-2222-4a10-9c00-aaaa00000002",
+      "applyUrl": "https://jobs.ashbyhq.com/acme/3f1c9a20-2222-4a10-9c00-aaaa00000002/application",
+      "compensation": {}
+    },
+    {
+      "id": "3f1c9a20-3333-4a10-9c00-aaaa00000003",
+      "title": "Staff Product Designer",
+      "location": "London, United Kingdom",
+      "department": "Design",
+      "team": "Core",
+      "isListed": false,
+      "isRemote": false,
+      "descriptionHtml": "<p>Hidden / unlisted role — should be skipped.</p>",
+      "descriptionPlain": "Hidden / unlisted role — should be skipped.",
+      "publishedAt": "2026-07-01T00:00:00.000Z",
+      "employmentType": "FullTime",
+      "jobUrl": "https://jobs.ashbyhq.com/acme/3f1c9a20-3333-4a10-9c00-aaaa00000003"
+    }
+  ]
+}

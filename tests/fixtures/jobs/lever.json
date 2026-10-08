@@ -1,0 +1,21 @@
+[
+  {
+    "id": "abc-123-def",
+    "text": "Backend Engineer (Python)",
+    "hostedUrl": "https://jobs.lever.co/acme/abc-123-def",
+    "applyUrl": "https://jobs.lever.co/acme/abc-123-def/apply",
+    "createdAt": 1788300000000,
+    "categories": { "commitment": "Full-time", "location": "Berlin", "team": "Platform" },
+    "descriptionPlain": "Build backend services in Python and PostgreSQL.",
+    "workplaceType": "hybrid"
+  },
+  {
+    "id": "ghi-456-jkl",
+    "text": "Data Science Internship",
+    "hostedUrl": "https://jobs.lever.co/acme/ghi-456-jkl",
+    "createdAt": 1788400000000,
+    "categories": { "commitment": "Internship", "location": "Remote", "team": "Data" },
+    "descriptionPlain": "Internship building models with Python.",
+    "workplaceType": "remote"
+  }
+]

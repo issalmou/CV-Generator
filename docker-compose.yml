@@ -1,0 +1,107 @@
+# CV Assistant - full stack (API + PostgreSQL + Redis + MinIO)
+#
+#   docker compose up --build          # build + run, logs in foreground
+#   docker compose up -d --build       # ... detached
+#   docker compose down                # stop & remove  (add -v to wipe data)
+#
+# Requires a .env file next to this one (copy .env.example) with at least
+# NVIDIA_API_KEY and JWT_SECRET_KEY set. The DB / Redis / MinIO connection
+# settings below are injected for the `api` service and override .env.
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: cv-assistant:latest
+    container_name: cv-assistant
+    ports:
+      - "8000:8000"
+    # headroom for the headless browser (job "career_pages" provider) — Chromium
+    # crashes with the default 64 MB /dev/shm. Harmless when BROWSER_ENABLED=false.
+    shm_size: "512m"
+    env_file:
+      - .env
+    environment:
+      PORT: "8000"
+      ALLOWED_ORIGINS: "${ALLOWED_ORIGINS:-*}"
+      DATABASE_URL: "postgresql://cv:cv@postgres:5432/cv_generator"
+      REDIS_URL: "redis://redis:6379/0"
+      MINIO_ENDPOINT: "minio:9000"
+      # The host a BROWSER downloads from — presigned URLs are signed against
+      # this. In prod set it to your public object-store domain. Locally,
+      # "localhost:9000" reaches the mapped MinIO container.
+      MINIO_PUBLIC_ENDPOINT: "${MINIO_PUBLIC_ENDPOINT:-localhost:9000}"
+      MINIO_PUBLIC_SECURE: "${MINIO_PUBLIC_SECURE:-false}"
+      MINIO_ACCESS_KEY: "${MINIO_ACCESS_KEY:-minioadmin}"
+      MINIO_SECRET_KEY: "${MINIO_SECRET_KEY:-minioadmin}"
+      MINIO_SECURE: "false"
+      DB_STATEMENT_TIMEOUT_MS: "${DB_STATEMENT_TIMEOUT_MS:-15000}"
+      JWT_SECRET_KEY: "${JWT_SECRET_KEY:?set JWT_SECRET_KEY in .env}"
+      BROWSER_ENABLED: "${BROWSER_ENABLED:-false}"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0) if urllib.request.urlopen('http://127.0.0.1:8000/api/health', timeout=4).status==200 else sys.exit(1)"]
+      interval: 30s
+      timeout: 5s
+      start_period: 15s
+      retries: 3
+
+  postgres:
+    image: postgres:16
+    container_name: cv-postgres
+    environment:
+      POSTGRES_USER: cv
+      POSTGRES_PASSWORD: cv
+      POSTGRES_DB: cv_generator
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cv -d cv_generator"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: cv-redis
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+
+  minio:
+    image: minio/minio
+    container_name: cv-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: "${MINIO_ACCESS_KEY:-minioadmin}"
+      MINIO_ROOT_PASSWORD: "${MINIO_SECRET_KEY:-minioadmin}"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:
+  minio_data:

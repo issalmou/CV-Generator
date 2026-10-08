@@ -1,0 +1,22 @@
+# Ashby public board tokens — jobs.ashbyhq.com/<token>
+# Best-effort; a dead token is skipped. Do not add fabricated slugs.
+ramp
+linear
+vanta
+posthog
+mistral
+runway
+hex
+replit
+supabase
+clay
+mercury
+watershed
+census
+dagster
+modal
+baseten
+anthropic
+notion
+openai
+cohere

@@ -1,0 +1,37 @@
+# Greenhouse public board tokens — boards.greenhouse.io/<token>
+# Best-effort; a dead token is skipped. Do not add fabricated slugs.
+stripe
+gitlab
+airbnb
+coinbase
+databricks
+robinhood
+discord
+dropbox
+reddit
+pinterest
+instacart
+doordash
+lyft
+cloudflare
+hashicorp
+gusto
+samsara
+benchling
+brex
+plaid
+sofi
+asana
+chime
+betterment
+flexport
+gopuff
+faire
+whatnot
+ramp
+mongodb
+sourcegraph
+dbtlabs
+airtable
+crunchbase
+thumbtack

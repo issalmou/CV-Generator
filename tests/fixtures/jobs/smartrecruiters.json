@@ -1,0 +1,38 @@
+{
+  "offset": 0,
+  "limit": 100,
+  "totalFound": 2,
+  "content": [
+    {
+      "id": "744000012345678",
+      "name": "Senior Data Engineer",
+      "uuid": "aaaa1111-bbbb-2222-cccc-333333333333",
+      "refNumber": "REF-4567",
+      "company": { "identifier": "AcmeCorp", "name": "Acme Corp" },
+      "releasedDate": "2026-08-22T08:30:00.000Z",
+      "location": {
+        "city": "Berlin",
+        "region": "Berlin",
+        "country": "de",
+        "remote": false
+      },
+      "department": { "label": "Data & Analytics" },
+      "function": { "label": "Engineering" },
+      "typeOfEmployment": { "label": "Full-time" },
+      "experienceLevel": { "label": "Mid-Senior Level" },
+      "ref": "https://api.smartrecruiters.com/v1/companies/AcmeCorp/postings/744000012345678"
+    },
+    {
+      "id": "744000087654321",
+      "name": "Product Analytics Intern",
+      "uuid": "dddd4444-eeee-5555-ffff-666666666666",
+      "company": { "name": "Acme Corp" },
+      "releasedDate": "2026-08-29T10:00:00.000Z",
+      "location": { "city": "Remote", "country": "de", "remote": true },
+      "department": { "label": "Product" },
+      "typeOfEmployment": { "label": "Intern" },
+      "experienceLevel": { "label": "Internship" },
+      "ref": "https://api.smartrecruiters.com/v1/companies/AcmeCorp/postings/744000087654321"
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+=== Mistral list (fresh) ===
+  46 models
+
+=== Gemini (2026 names) ===
+  gemini-3.6-flash           plain=FAIL ttft=None tok/s=None json_obj=False json_schema=False
+     -> None
+  gemini-3.5-flash           plain=ok ttft=16.86 tok/s=0.4 json_obj=False json_schema=False
+  gemini-3.5-flash-lite      plain=ok ttft=0.88 tok/s=43.2 json_obj=True json_schema=True
+    gemini/gemini-3.1-pro-preview: RateLimitError: Error code: 429 - [{'error': {'code': 429, ' -> wait 8s
+    gemini/gemini-3.1-pro-preview: RateLimitError: Error code: 429 - [{'error': {'code': 429, ' -> wait 16s
+    gemini/gemini-3.1-pro-preview: RateLimitError: Error code: 429 - [{'error': {'code': 429, ' -> wait 24s
+    gemini/gemini-3.1-pro-preview: RateLimitError: Error code: 429 - [{'error': {'code': 429, ' -> wait 32s
+  gemini-3.1-pro-preview     plain=FAIL ttft=None tok/s=None json_obj=False json_schema=False
+     -> RateLimitError: Error code: 429 - [{'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/r
+    gemini/gemini-pro-latest: RateLimitError: Error code: 429 - [{'error': {'code': 429, ' -> wait 8s
+    gemini/gemini-pro-latest: RateLimitError: Error code: 429 - [{'error': {'code': 429, ' -> wait 16s
+    gemini/gemini-pro-latest: RateLimitError: Error code: 429 - [{'error': {'code': 429, ' -> wait 24s
+    gemini/gemini-pro-latest: RateLimitError: Error code: 429 - [{'error': {'code': 429, ' -> wait 32s
+  gemini-pro-latest          plain=FAIL ttft=None tok/s=None json_obj=False json_schema=False
+     -> RateLimitError: Error code: 429 - [{'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/r
+  gemini-3.1-flash-lite      plain=ok ttft=0.74 tok/s=39.2 json_obj=True json_schema=True
+
+=== Mistral (sequential + backoff) ===
+    mistral/mistral-small-latest: RateLimitError: Error code: 429 - {'object': 'error', 'messa -> wait 8s
+    mistral/mistral-small-latest: RateLimitError: Error code: 429 - {'object': 'error', 'messa -> wait 16s
+    mistral/mistral-small-latest: RateLimitError: Error code: 429 - {'object': 'error', 'messa -> wait 24s
+    mistral/mistral-small-latest: RateLimitError: Error code: 429 - {'object': 'error', 'messa -> wait 32s
+  mistral-small-latest       plain=FAIL ttft=None tok/s=None json_obj=False json_schema=False
+     -> RateLimitError: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}
+    mistral/mistral-medium-latest: RateLimitError: Error code: 429 - {'object': 'error', 'messa -> wait 8s
+    mistral/mistral-medium-latest: RateLimitError: Error code: 429 - {'object': 'error', 'messa -> wait 16s
+    mistral/mistral-medium-latest: RateLimitError: Error code: 429 - {'object': 'error', 'messa -> wait 24s
+    mistral/mistral-medium-latest: RateLimitError: Error code: 429 - {'object': 'error', 'messa -> wait 32s
+  mistral-medium-latest      plain=FAIL ttft=None tok/s=None json_obj=False json_schema=False
+     -> RateLimitError: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}
+    mistral/mistral-medium-3.5: RateLimitError: Error code: 429 - {'object': 'error', 'messa -> wait 8s
+    mistral/mistral-medium-3.5: RateLimitError: Error code: 429 - {'object': 'error', 'messa -> wait 16s
+    mistral/mistral-medium-3.5: RateLimitError: Error code: 429 - {'object': 'error', 'messa -> wait 24s
+    mistral/mistral-medium-3.5: RateLimitError: Error code: 429 - {'object': 'error', 'messa -> wait 32s
+  mistral-medium-3.5         plain=FAIL ttft=None tok/s=None json_obj=False json_schema=False
+     -> RateLimitError: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}
+    mistral/magistral-small-latest: RateLimitError: Error code: 429 - {'object': 'error', 'messa -> wait 8s
+    mistral/magistral-small-latest: RateLimitError: Error code: 429 - {'object': 'error', 'messa -> wait 16s
+    mistral/magistral-small-latest: RateLimitError: Error code: 429 - {'object': 'error', 'messa -> wait 24s
+    mistral/magistral-small-latest: RateLimitError: Error code: 429 - {'object': 'error', 'messa -> wait 32s
+  magistral-small-latest     plain=FAIL ttft=None tok/s=None json_obj=False json_schema=False
+     -> RateLimitError: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}
+
+wrote C:\Users\isalm\Documents\master_insea\projet_imgharne\cv-generator-final1\cv-generator\benchmarks\bakeoff\results\capabilities_reprobe.json

@@ -1,0 +1,37 @@
+{
+  "apiVersion": "2.0",
+  "jobCount": 2,
+  "jobs": [
+    {
+      "id": 152328,
+      "url": "https://jobicy.com/jobs/tala-sdet-ii",
+      "jobSlug": "tala-sdet-ii",
+      "jobTitle": "SDET II",
+      "companyName": "Tala",
+      "jobIndustry": ["Engineering"],
+      "jobType": ["full-time"],
+      "jobGeo": "France",
+      "jobLevel": "Senior",
+      "jobExcerpt": "Senior SDET.",
+      "jobDescription": "<p>Test automation with Python.</p>",
+      "pubDate": "2026-09-01T14:34:20+00:00",
+      "annualSalaryMin": "90000",
+      "annualSalaryMax": "120000",
+      "salaryCurrency": "USD"
+    },
+    {
+      "id": 152329,
+      "url": "https://jobicy.com/jobs/hooli-data-analyst",
+      "jobSlug": "hooli-data-analyst",
+      "jobTitle": "Data Analyst",
+      "companyName": "Hooli",
+      "jobIndustry": ["Data Science"],
+      "jobType": ["full-time"],
+      "jobGeo": "Anywhere",
+      "jobLevel": "Mid-Level",
+      "jobExcerpt": "Analyst.",
+      "jobDescription": "<p>SQL and dashboards.</p>",
+      "pubDate": "2026-08-30T10:00:00+00:00"
+    }
+  ]
+}

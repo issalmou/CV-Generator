@@ -1,0 +1,32 @@
+{
+  "0-legal-notice": "Remotive API",
+  "job-count": 2,
+  "jobs": [
+    {
+      "id": 990001,
+      "url": "https://remotive.com/remote-jobs/data/data-scientist-990001",
+      "title": "Data Scientist",
+      "company_name": "Lemon.io",
+      "category": "Data Analysis",
+      "tags": ["python", "sql", "machine learning"],
+      "job_type": "full_time",
+      "publication_date": "2026-08-28T09:00:00",
+      "candidate_required_location": "Europe",
+      "salary": "$90,000 - $120,000",
+      "description": "<p>Remote data scientist role. Python, SQL, ML.</p>"
+    },
+    {
+      "id": 990002,
+      "url": "https://remotive.com/remote-jobs/software-dev/ml-intern-990002",
+      "title": "Machine Learning Intern",
+      "company_name": "Pied Piper",
+      "category": "Software Development",
+      "tags": ["python", "pytorch"],
+      "job_type": "internship",
+      "publication_date": "2026-09-01T09:00:00",
+      "candidate_required_location": "Worldwide",
+      "salary": "",
+      "description": "<p>Internship, remote, 4 months.</p>"
+    }
+  ]
+}

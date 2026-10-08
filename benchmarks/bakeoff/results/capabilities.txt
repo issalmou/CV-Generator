@@ -1,0 +1,53 @@
+  done: nvidia/nvidia/nemotron-nano-3-30b-a3b
+  done: nvidia/nvidia/llama-3.1-nemotron-70b-instruct
+  done: nvidia/writer/palmyra-creative-122b
+  done: gemini/gemini-2.5-flash-lite
+  done: gemini/gemini-2.5-flash
+  done: gemini/gemini-2.5-pro
+  done: mistral/mistral-small-latest
+  done: mistral/mistral-medium-latest
+  done: mistral/mistral-medium-3.5
+  done: gemini/gemini-flash-latest
+  done: mistral/magistral-small-latest
+  done: nvidia/nvidia/nemotron-3-super-120b-a12b
+  done: groq/openai/gpt-oss-20b
+  done: gemini/gemini-3-flash-preview
+  done: groq/qwen/qwen3.8-27b
+  done: groq/openai/gpt-oss-120b
+  done: nvidia/nvidia/nemotron-3.5-lightning-30b-a3b
+  done: nvidia/openai/gpt-oss-20b
+
+==============================================================================================================
+provider model                                    plain  ttft   tok/s   json_obj  json_schema
+--------------------------------------------------------------------------------------------------------------
+gemini   gemini-2.5-flash                         FAIL   -      -       no        no         
+         -> NotFoundError: Error code: 404 - [{'error': {'code': 404, 'message': 'This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API.', 'status': 'NO
+gemini   gemini-2.5-flash-lite                    FAIL   -      -       no        no         
+         -> NotFoundError: Error code: 404 - [{'error': {'code': 404, 'message': 'This model models/gemini-2.5-flash-lite is no longer available to new users. Please update your code to use models/gemini-3.5-flash-lite for the latest features and improvements. We recommend you to use the Interactions API.', 'st
+gemini   gemini-2.5-pro                           FAIL   -      -       no        no         
+         -> NotFoundError: Error code: 404 - [{'error': {'code': 404, 'message': 'This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API.', 'status':
+gemini   gemini-3-flash-preview                   ok     1.77   4.5     no        no         
+gemini   gemini-flash-latest                      FAIL   -      -       no        no         
+         -> InternalServerError: Error code: 503 - [{'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}]
+groq     openai/gpt-oss-120b                      ok     0.65   153.5   yes       yes        
+groq     openai/gpt-oss-20b                       ok     0.48   114.0   yes       yes        
+groq     qwen/qwen3.8-27b                         ok     0.24   93.8    yes       yes        
+mistral  magistral-small-latest                   FAIL   -      -       no        no         
+         -> RateLimitError: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}
+mistral  mistral-medium-3.5                       FAIL   -      -       no        no         
+         -> RateLimitError: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}
+mistral  mistral-medium-latest                    FAIL   -      -       no        no         
+         -> RateLimitError: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}
+mistral  mistral-small-latest                     FAIL   -      -       no        no         
+         -> RateLimitError: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}
+nvidia   nvidia/llama-3.1-nemotron-70b-instruct   FAIL   -      -       no        no         
+         -> NotFoundError: Error code: 404 - {'status': 404, 'title': 'Not Found', 'detail': "Function '9b96341b-9791-4db9-a00d-4e43aa192a39': Not found for account '[token]-eX_w6D-U'"}
+nvidia   nvidia/nemotron-3-super-120b-a12b        ok     3.9    15.2    yes       no         
+nvidia   nvidia/nemotron-3.5-lightning-30b-a3b    ok     7.43   26.8    no        no         
+nvidia   nvidia/nemotron-nano-3-30b-a3b           FAIL   -      -       no        no         
+         -> NotFoundError: Error code: 404 - {'status': 404, 'title': 'Not Found', 'detail': "Function '2b2dcd47-c858-425a-9c04-4cacf2eac993': Not found for account '[token]-eX_w6D-U'"}
+nvidia   openai/gpt-oss-20b                       ok     20.33  4.4     yes       yes        
+nvidia   writer/palmyra-creative-122b             FAIL   -      -       no        no         
+         -> NotFoundError: Error code: 404 - {'status': 404, 'title': 'Not Found', 'detail': "Function '00bdd0a7-e38f-4423-9007-c4d8730a3f78': Not found for account '[token]-eX_w6D-U'"}
+
+wrote C:\Users\isalm\Documents\master_insea\projet_imgharne\cv-generator-final1\cv-generator\benchmarks\bakeoff\results\capabilities.json

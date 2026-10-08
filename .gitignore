@@ -1,0 +1,55 @@
+# ---------------------------------------------------------------------------
+# CV Assistant — CV Generation
+# ---------------------------------------------------------------------------
+
+# Secrets — never commit the real .env (only .env.example is tracked).
+.env
+.env.*
+!.env.example
+
+
+NVIDIA_MODELS_FALLBACK = [
+    # Primary — best quality/latency balance on NVIDIA NIM.
+    "meta/llama-3.3-70b-instruct",
+    "meta/llama-3.1-70b-instruct",
+    # Secondary — different vendor, similar capability.
+    "nvidia/llama-3.1-nemotron-70b-instruct",
+    "mistralai/mixtral-8x22b-instruct-v0.1",
+    # Last resort — smaller, fastest, always available.
+    "meta/llama-3.1-8b-instruct",
+
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Generated artefacts (PDFs go to MinIO, never persisted locally — but keep
+# this in case a developer uses a local debug script).
+generated_cvs/
+*.pdf
+
+# Local SQLite databases (tests + dev fallback)
+*.db
+test_cv.db
+cv_generator.db
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Newman run reports (regenerated)
+postman/newman-report*.json
