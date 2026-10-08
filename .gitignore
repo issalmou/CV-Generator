@@ -53,3 +53,10 @@ Thumbs.db
 
 # Newman run reports (regenerated)
 postman/newman-report*.json
+
+# Documentation and reports not for version control
+benchmarks/
+PROJECT_STRUCTURE.md
+RAPPORT_PHASES_65_78.md
+REFACTOR_REPORT.md
+
