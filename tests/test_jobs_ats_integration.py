@@ -108,7 +108,7 @@ def test_ats_dedup_across_providers(db, swap_providers, fake_http, job_fixtures)
     gh_json = (
         '{"jobs":[{"id":5551,"title":"Platform Engineer","absolute_url":'
         '"https://boards.greenhouse.io/acme/jobs/5551","location":{"name":"Berlin, Germany"},'
-        '"content":"Build platforms.","updated_at":"2026-08-20T00:00:00Z"}]}'
+        '"content":"Build platforms.","updated_at":"2099-08-20T00:00:00Z"}]}'
     )
     swap_providers([AshbyProvider(), GreenhouseProvider()])
     fake_http.route("job-board/acme", ashby_json)

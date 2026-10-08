@@ -41,6 +41,7 @@ def mgr(monkeypatch):
     monkeypatch.setattr(settings, "BROWSER_ENABLED", True)
     monkeypatch.setattr(settings, "BROWSER_IDLE_SHUTDOWN_SECONDS", 300)
     monkeypatch.setattr(settings, "BROWSER_MAX_PAGES_PER_SESSION", 40)
+    monkeypatch.setattr("services.providers.http._resolved_ips", lambda _host: ["93.184.216.34"])
     _FakeDriver.instances = 0
     m = BrowserSessionManager()
     monkeypatch.setattr(m, "_new_driver", lambda: _FakeDriver())

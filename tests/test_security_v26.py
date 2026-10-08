@@ -15,6 +15,8 @@ import re
 import bcrypt
 import pytest
 from fastapi.routing import APIRoute
+
+from api.admin import router as admin_router
 from fastapi.testclient import TestClient
 
 import main
@@ -56,8 +58,7 @@ def test_every_admin_route_requires_superadmin():
             return True
         return any(_guarded(s) for s in getattr(dep, "dependencies", []))
 
-    admin = [r for r in main.app.routes
-             if isinstance(r, APIRoute) and r.path.startswith("/api/admin")]
+    admin = [r for r in admin_router.routes if isinstance(r, APIRoute)]
     assert len(admin) >= 15
     unguarded = [f"{sorted(r.methods)} {r.path}" for r in admin
                  if not any(_guarded(d) for d in r.dependant.dependencies)]

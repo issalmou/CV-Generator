@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 from schemas.jobs import NormalizedOffer, ProviderState, ProviderStatus
 from services.providers.base import ApplicationMethod, ProviderResult, RevalidationResult
@@ -22,7 +22,7 @@ def make_offer(source="arbeitnow", sid="1", **kw) -> NormalizedOffer:
         source=source, source_job_id=sid,
         source_url=kw.pop("url", f"https://{source}.example/{sid}"),
         title="Data Scientist", company="Globex", city="Paris",
-        posted_at=datetime(2026, 9, 1, tzinfo=timezone.utc),
+        posted_at=datetime.now(timezone.utc) - timedelta(days=1),
     )
     data.update(kw)
     return NormalizedOffer(**data)

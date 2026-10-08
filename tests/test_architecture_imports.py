@@ -47,7 +47,7 @@ def test_domain_module_imports(mod):
 
 def test_import_main_wires_every_router():
     import main
-    paths = {getattr(r, "path", "") for r in main.app.routes}
+    paths = set(main.app.openapi().get("paths", {}).keys())
     for expected in ("/api/auth/signin", "/api/generate-cv", "/api/jobs/{job_id}/apply",
                      "/api/conversations/{conversation_id}/messages", "/api/admin/llm",
                      "/api/profile", "/api/dashboard", "/api/dashboard/jobs", "/api/health"):
